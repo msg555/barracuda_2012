@@ -17,7 +17,7 @@
 
 using namespace std;
 
-const int DEFAULT_PORT = 5150;
+const int DEFAULT_PORT = 4776;
 
 char* args[16] = {NULL};
 FILE* fin = NULL;
