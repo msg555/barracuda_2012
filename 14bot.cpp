@@ -91,6 +91,7 @@ int main() {
     if(offer.empty()) break;
 
     int bid = min(14, credits);
+    if(PICKS[round % 7] == -1) bid = 0;
     cout << bid << endl;
 
     int win; cin >> win;
@@ -102,6 +103,7 @@ int main() {
     if(win) {
       credits -= bid;
       cout << offer[PICKS[round % 7] % offer.size()] << endl;
+      PICKS[round % 7] = -1;
       int r = ORD[offer[0]] / 7;
       int c = ORD[offer[0]] % 7;
       C[r][c] = idx;
