@@ -76,6 +76,25 @@ void test_3_by_3_no_path() {
   assert(foo.Search() == -1);
 }
 
+void test_3_by_3_no_path_more() {
+  vector<vector<int > > a;
+  int n = 3;
+  for (int i = 0; i < n; ++i) { 
+    vector<int> s;
+    for (int j = 0; j < n; ++j)
+      s.push_back(0);
+    a.push_back(s);
+  }
+  a[0][0] = -2;
+  a[0][1] = -1;
+  a[0][2] = -1;
+  a[1][0] = -1;
+  a[1][1] = -1;
+  a[2][2] = -1;
+  a[1][2] = -2;
+  FindPath foo(a, 0, true);
+  assert(foo.Search() == -1);
+}
 void test_4_by_4() {
   vector<vector<int > > a;
   int n = 4;
@@ -132,5 +151,6 @@ int main() {
   test_4_by_4_vertical();
   
   test_3_by_3_no_path();
+  test_3_by_3_no_path_more();
   return -1;
 }
