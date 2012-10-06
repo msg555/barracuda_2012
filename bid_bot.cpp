@@ -173,8 +173,8 @@ int main() {
     int bid = credits / best.first;
     if(!opwant) {
       bid = (int)(bid * 0.5);
-    } else if(round < 3) {
-      bid = 8;
+    } else if(round < 4) {
+      bid = 7 + rand() % 6;
     }
     if(mewant && bestoff.first == best.first &&
        __builtin_clz(best.second.first) - __builtin_clz(bestoff.second.first) <= 1) {
