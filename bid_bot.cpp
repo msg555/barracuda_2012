@@ -170,7 +170,7 @@ int main() {
       bid = 8;
     }
     if(opwant && opneed == 1) {
-      bid = (int)(bid * 1.5);
+      bid = min((int)(0.2 + credits * .8), (int)(bid * 1.5));
       if(!mewant) BPICKS[round % 7] = opchoice;
     }
     if(!mewant && !opwant) {
