@@ -171,6 +171,7 @@ int main() {
     }
     if(opwant && opneed == 1) {
       bid = (int)(bid * 1.5);
+      if(!mewant) BPICKS[round % 7] = opchoice;
     }
     
     if(bid == 0) bid = 1;
