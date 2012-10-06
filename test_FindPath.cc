@@ -141,6 +141,21 @@ void test_4_by_4_vertical() {
   assert(foo.Search() == 2);
 }
 
+void test_2_by_2_no_square() {
+  vector<vector<int > > a;
+  int n = 2;
+  for (int i = 0; i < n; ++i) { 
+    vector<int> s;
+    for (int j = 0; j < n; ++j)
+      s.push_back(0);
+    a.push_back(s);
+  }
+  a[0][0] = -2;
+  a[1][1] = -2;
+  FindPath foo(a, 1, true);
+  assert(foo.Search() == 0);
+}
+
 int main() {
    
   test_2_by_2();
@@ -149,8 +164,10 @@ int main() {
   
   test_3_by_3_vertical();
   test_4_by_4_vertical();
-  
+   
   test_3_by_3_no_path();
   test_3_by_3_no_path_more();
+
+  test_2_by_2_no_square();
   return -1;
 }
