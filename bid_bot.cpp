@@ -173,6 +173,10 @@ int main() {
       bid = (int)(bid * 1.5);
       if(!mewant) BPICKS[round % 7] = opchoice;
     }
+    if(!mewant && !opwant) {
+      bid = 1;
+      BPICKS[round % 7] = offer[rand() % offer.size()];
+    }
     
     if(bid == 0) bid = 1;
     if(BPICKS[round % 7] == -1) bid = 0;
