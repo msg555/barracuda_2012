@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstring>
 #include <cstdlib>
+#include <algorithm>
 
 #include "protocol_common.h"
 
@@ -86,6 +87,7 @@ int main() {
   memset(C, -1, sizeof(C));
   for(int round = 0; credits > 0; round++) {
     vector<int> offer = get_vector();
+    sort(offer.begin(), offer.end());
     if(offer.empty()) break;
 
     int bid = min(14, credits);

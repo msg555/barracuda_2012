@@ -4,7 +4,7 @@ CXXFLAGS +=
 LDFLAGS +=
 LIBS += $(shell xmlrpc-c-config c++2 abyss-server --libs)
 
-all: driver duel simple stupid_bot
+all: driver duel simple stupid_bot 14bot
 
 driver: driver.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o driver driver.cpp $(LIBS)
@@ -18,6 +18,9 @@ duel: duel.cpp
 stupid_bot: stupid_bot.cpp FindPath.cc
 	$(CXX) $(CPPFLAGS) -o stupid_bot stupid_bot.cpp FindPath.cc
 
+14bot: 14bot.cpp
+	$(CXX) $(CPPFLAGS) -o 14bot 14bot.cpp
+
 .PHONY: clean
 clean:
-	rm -rf *.o driver duel simple
+	rm -rf *.o driver duel simple stupid_bot 14bot
