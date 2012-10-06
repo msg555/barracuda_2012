@@ -14,21 +14,50 @@ int A[7][7];
 int C[7][7];
 int ORD[50];
 
+pair<int, int> best;
 int PICKS[7];
+int BPICKS[7];
+int rot;
 
-bool find_picks(int r, int c, int m) {
-  PICKS[A[r][c] / 7] = A[r][c] % 7;
-  if(c == 6) return true;
+void find_picks(int r, int c, int m) {
+  bool setpick = false;
+  if(C[r][c] == 1) return;
+  if(C[r][c] == -1) {
+    int j;
+    int om = m;
+    for(j = (rot + A[r][c] / 7) % 7; j < 30; j += 7) {
+      if(m & 1 << j) continue;
+      m |= 1 << j;
+      break;
+    }
+    if(m == om) return;
+
+    if(j < 7) {
+      setpick = true;
+      PICKS[A[r][c] / 7] = A[r][c];
+    }
+  }
+
+  pair<int, int> val(__builtin_popcount(m), m);
+  if(val >= best) {
+    if(setpick) PICKS[A[r][c] / 7] = -1;
+    return;
+  }
+  
+  if(c == 6) {
+    best = val;
+    memcpy(BPICKS, PICKS, sizeof(PICKS));
+    if(setpick) PICKS[A[r][c] / 7] = -1;
+    return;
+  }
+
   for(int dr = -1; dr <= 1; dr++) {
     int nr = r + dr;
     if(nr < 0 || nr >= 7) continue;
-
-    int b = A[nr][c + 1] / 7;
-    if(m & 1 << b) continue;
-
-    if(find_picks(nr, c + 1, m | 1 << b)) return true;
+    find_picks(nr, c + 1, m);
   }
-  return false;
+
+  if(setpick) PICKS[A[r][c] / 7] = -1;
 }
 
 int main() {
@@ -44,25 +73,22 @@ int main() {
     }
   }
 
-
-  bool found_picks = false;
-  for(int i = 0; i < 7; i++) PICKS[i] = 0;
-  for(int i = 0; i < 7; i++) {
-    if(find_picks(i, 0, 1 << (A[i][0] / 7))) {
-      found_picks = true;
-      break;
-    }
-  }
-
-  bool marked_win = false;
   memset(C, -1, sizeof(C));
   for(int round = 0; ; round++) {
     vector<int> offer = get_vector();
     sort(offer.begin(), offer.end());
     if(offer.empty()) break;
 
-    int bid = min(14, credits);
-    if(PICKS[round % 7] == -1) bid = 0;
+    rot = 7 - round % 7;
+    best = make_pair(128, 0);
+    memset(PICKS, -1, sizeof(PICKS));
+    BPICKS[0] = offer[0];
+    for(int r = 0; r < 7; r++) {
+      find_picks(r, 0, 0);
+    }
+
+    int bid = max(1, credits / best.first);
+    if(BPICKS[round % 7] == -1) bid = 0;
     cout << bid << endl;
 
     int win; cin >> win;
@@ -72,7 +98,7 @@ int main() {
     }
     if(win) {
       credits -= bid;
-      int choice = offer[PICKS[round % 7] % offer.size()];
+      int choice = BPICKS[round % 7];
       int r = ORD[choice] / 7;
       int c = ORD[choice] % 7;
       C[r][c] = 0;
@@ -81,7 +107,7 @@ int main() {
       int choice; cin >> choice;
       int r = ORD[choice] / 7;
       int c = ORD[choice] % 7;
-      C[r][c] = 1 - idx;
+      C[r][c] = 1;
     }
   }
   return 0;

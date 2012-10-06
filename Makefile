@@ -21,6 +21,9 @@ stupid_bot: stupid_bot.cpp FindPath.cc
 14bot: 14bot.cpp
 	$(CXX) $(CPPFLAGS) -o 14bot 14bot.cpp
 
+14bot: 14bot_adapt.cpp
+	$(CXX) $(CPPFLAGS) -o 14bot_adapt 14bot_adapt.cpp
+
 .PHONY: clean
 clean:
-	rm -rf *.o driver duel simple stupid_bot 14bot
+	rm -rf *.o driver duel simple stupid_bot 14bot 14bot_adapt

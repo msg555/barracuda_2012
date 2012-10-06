@@ -28,7 +28,7 @@ pair<FILE*, FILE*> exec_pipe(char *const args[]) {
     dup2(pipe_b[1], 1);
     close(pipe_a[0]); close(pipe_a[1]);
     close(pipe_b[0]); close(pipe_b[1]);
-    close(2);
+    //close(2);
     execv(args[0], args);
     perror("execv");
     exit(1);
@@ -77,6 +77,7 @@ int check_winner() {
 
 int main(int argc, char** argv) {
   int wins[2] = {0, 0};
+  int ties = 0;
   for(int idx = 0; ; idx = 1 - idx) {
     for(int i = 0; i < 49; i++) {
       ORD[i] = i;
@@ -87,7 +88,9 @@ int main(int argc, char** argv) {
     }
     memset(C, -1, sizeof(C));
 
-    int credits[2] = {98, 98};
+    int credits[2];
+    credits[0] = 98;
+    credits[1] = 98;
 
     pair<FILE*, FILE*> p[2];
     for(int i = 0; i < 2; i++) {
@@ -110,8 +113,14 @@ int main(int argc, char** argv) {
     int r;
     int tie_breaker = 0;
     int total_rounds = 0;
+    bool is_tie = false;
     for(int i = 0; total_rounds < 1024 &&
                     !(r = check_winner()); i = (i + 1) % 7, total_rounds++) {
+      if(credits[0] + credits[1] == 0) {
+        is_tie = true;
+        break;
+      }
+
       vector<int> order;
       for(int j = 0; j < 7; j++) {
         int v = ORD[i * 7 + j];
@@ -135,9 +144,15 @@ int main(int argc, char** argv) {
       for(int j = 0; j < 2; j++) {
         fscanf(p[j].second, "%d", bids + j);
         if(bids[j] < 0 || bids[j] > credits[j]) {
-          fprintf(stderr, "Bot %d gave bad bid\n", j ^ idx);
+          fprintf(stderr, "Bot %d gave bad bid (%d/%d)\n", j ^ idx, bids[j],
+                  credits[j]);
           return 1;
         }
+      }
+      if(bids[0] == 0 && bids[1] == 0) {
+        fprintf(p[0].first, "-1\n");
+        fprintf(p[1].first, "-1\n");
+        continue;
       }
 
       int winner = bids[0] > bids[1] ||
@@ -158,9 +173,13 @@ int main(int argc, char** argv) {
 
       C[ORD[choice] / 7][ORD[choice] % 7] = winner;
     }
-    wins[(r - 1) ^ idx]++;
+    if(is_tie) {
+      ties++;
+    } else {
+      wins[(r - 1) ^ idx]++;
+    }
 
-    printf("\rWINS %5d %5d", wins[0], wins[1]);
+    printf("\rWINS %5d %5d %5d", wins[0], wins[1], ties);
     fflush(stdout);
 
     for(int i = 0; i < 2; i++) {
