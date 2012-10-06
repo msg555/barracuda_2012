@@ -182,7 +182,7 @@ int main() {
       //bid = (int)(bid * 0.5);
     }
     if(opwant && opneed == 1) {
-      bid = min((int)(0.4 + credits * .6), (int)(bid * 1.5));
+      bid = min((int)(0.4 + credits * .6), (int)(bid * (1.4 + (rand() % 300) / 1000.0)));
       //bid = min((int)(0.2 + credits * .8), (int)(bid * 1.5));
       if(!mewant) BPICKS[round % 7] = opchoice;
     } else if(opwant && !mewant) {
