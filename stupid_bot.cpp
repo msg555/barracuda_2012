@@ -64,7 +64,7 @@ int main() {
     vector<int> offer = get_vector();
     if(offer.empty()) break;
 
-    int bid = min(14, credits);
+    int bid = min(5, credits);
     cout << bid << endl;
 
     int win; cin >> win;
