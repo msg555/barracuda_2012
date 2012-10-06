@@ -178,6 +178,7 @@ int main() {
       BPICKS[round % 7] = offer[rand() % offer.size()];
     }
     
+    if(mewant && best.first == 1) bid = credits;
     if(bid == 0) bid = 1;
     if(BPICKS[round % 7] == -1) bid = 0;
     if(bid > credits) bid = credits;
