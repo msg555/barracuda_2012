@@ -76,6 +76,8 @@ int check_winner() {
 }
 
 int main(int argc, char** argv) {
+  srand(time(NULL));
+
   int wins[2] = {0, 0};
   int ties = 0;
   for(int idx = 0; ; idx = 1 - idx) {
