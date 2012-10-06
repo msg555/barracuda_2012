@@ -15,6 +15,7 @@ int C[7][7];
 int ORD[50];
 
 pair<int, pair<int, int> > best;
+pair<int, pair<int, int> > bestoff;
 int PICKS[7];
 int BPICKS[7];
 int rot;
@@ -26,7 +27,7 @@ int dc[] = {-1, 0, 1, 1, 1, 0, -1, -1};
 
 void dfs(int r, int c) {
   if(r < 0 || r >= 7 || c < 0 || c >= 7 || vis[r][c] ||
-     !(C[r][c] == -2 || C[r][c] == 0)) return;
+     !(C[r][c] <= -3 || C[r][c] == 0)) return;
   vis[r][c] = true;
   for(int i = 0; i < 8; i++) {
     dfs(r + dr[i], c + dc[i]);
@@ -40,26 +41,25 @@ int score_path() {
     int b = (j + 7 - rot) % 7;
     if(PICKS[b] == -1) continue;
     int v = ORD[PICKS[b]];
-    C[v / 7][v % 7] = -2;
+    C[v / 7][v % 7] -= 2;
 
     int comps = 0;
     memset(vis, 0, sizeof(vis));
     for(int i = 0; i < 7; i++) {
       for(int j = 0; j < 7; j++) {
-        if(!(C[i][j] == -2 || C[i][j] == 0) || vis[i][j]) continue;
+        if(!(C[i][j] <= -3 || C[i][j] == 0) || vis[i][j]) continue;
         dfs(i, j);
         comps++;
       }
     }
-    res += (4 - pos++) * comps;
-    if(pos == 4) break;
+    if(pos < 4) res += (4 - pos++) * comps;
   }
 
   for(int j = 0; j < 7; j++) {
     int b = (j + 7 - rot) % 7;
     if(PICKS[b] == -1) continue;
     int v = ORD[PICKS[b]];
-    C[v / 7][v % 7] = -1;
+    C[v / 7][v % 7] += 2;
   }
   return res;
 }
@@ -67,7 +67,7 @@ int score_path() {
 void find_picks(int r, int c, int m, int sumcomp) {
   bool setpick = false;
   if(C[r][c] == 1) return;
-  if(C[r][c] == -1) {
+  if(C[r][c] < 0) {
     int j;
     int om = m;
     for(j = (rot + A[r][c] / 7) % 7; j < 30; j += 7) {
@@ -77,15 +77,19 @@ void find_picks(int r, int c, int m, int sumcomp) {
     }
     if(m == om) return;
 
+    sumcomp += C[r][c] == -2;
     if(j < 7) {
       setpick = true;
       PICKS[A[r][c] / 7] = A[r][c];
     }
   }
 
-  pair<int, pair<int, int> > val(__builtin_popcount(m), make_pair(m, 0));
+  pair<int, pair<int, int> > val(__builtin_popcount(m), make_pair(sumcomp ? 0 : m, 0));
+  if(c == 6 && (~m & 1) && val <= bestoff) {
+    bestoff = val;
+  }
   if(val >= best) {
-    if(setpick) { PICKS[A[r][c] / 7] = -1; C[r][c] = -1; }
+    if(setpick) { PICKS[A[r][c] / 7] = -1; }
     return;
   }
   
@@ -95,7 +99,7 @@ void find_picks(int r, int c, int m, int sumcomp) {
       best = val;
       memcpy(BPICKS, PICKS, sizeof(PICKS));
     }
-    if(setpick) { PICKS[A[r][c] / 7] = -1; C[r][c] = -1; }
+    if(setpick) { PICKS[A[r][c] / 7] = -1; }
     return;
   }
 
@@ -105,7 +109,7 @@ void find_picks(int r, int c, int m, int sumcomp) {
     find_picks(nr, c + 1, m, sumcomp);
   }
 
-  if(setpick) { PICKS[A[r][c] / 7] = -1; C[r][c] = -1; }
+  if(setpick) { PICKS[A[r][c] / 7] = -1; }
 }
 
 void transpose() {
@@ -145,10 +149,11 @@ int main() {
     bool opwant = false;
     int opneed = 0;
     int opchoice = -1;
+    int spec = -1;
     for(int i = 0; i < 2; i++) {
       transpose();
       rot = 7 - round % 7;
-      best = make_pair(128, make_pair(0, 0));
+      bestoff = best = make_pair(128, make_pair(0, 0));
       memset(PICKS, -1, sizeof(PICKS));
       BPICKS[round % 7] = offer[0];
       for(int r = 0; r < 7; r++) {
@@ -158,8 +163,10 @@ int main() {
         opwant = BPICKS[round % 7] != -1;
         opneed = best.first;
         opchoice = BPICKS[round % 7];
+        //if(opchoice != -1) C[ORD[opchoice] / 7][ORD[opchoice] % 7] = -2;
       }
     }
+    //if(opchoice != -1) C[ORD[opchoice] / 7][ORD[opchoice] % 7] = -1;
 
     bool mewant = BPICKS[round % 7] != -1;
 
@@ -168,6 +175,11 @@ int main() {
       bid = (int)(bid * 0.5);
     } else if(round < 3) {
       bid = 8;
+    }
+    if(mewant && bestoff.first == best.first &&
+       __builtin_clz(best.second.first) - __builtin_clz(bestoff.second.first) <= 1) {
+      bid = (int)(bid * 0.8);
+      //bid = (int)(bid * 0.5);
     }
     if(opwant && opneed == 1) {
       bid = min((int)(0.2 + credits * .8), (int)(bid * 1.5));
