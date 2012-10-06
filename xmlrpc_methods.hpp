@@ -9,9 +9,6 @@
 
 class PingMethod : public xmlrpc_c::method {
 public:
-    PingMethod();
-    ~PingMethod();
-
     void execute(const xmlrpc_c::paramList& paramList, xmlrpc_c::value* const retval);
 };
 
@@ -19,9 +16,6 @@ public:
 
 class InitGameMethod : public xmlrpc_c::method {
 public:
-    InitGameMethod();
-    ~InitGameMethod();
-
     void execute(const xmlrpc_c::paramList& paramList, xmlrpc_c::value* const retval);
 };
 
@@ -29,9 +23,6 @@ public:
 
 class GetBidMethod : public xmlrpc_c::method {
 public:
-    GetBidMethod();
-    ~GetBidMethod();
-
     void execute(const xmlrpc_c::paramList& paramList, xmlrpc_c::value* const retval);
 };
 
@@ -39,9 +30,6 @@ public:
 
 class MakeChoiceMethod : public xmlrpc_c::method {
 public:
-    MakeChoiceMethod();
-    ~MakeChoiceMethod();
-
     void execute(const xmlrpc_c::paramList& paramList, xmlrpc_c::value* const retval);
 };
 
@@ -49,8 +37,10 @@ public:
 
 class MoveResultMethod : public xmlrpc_c::method {
 public:
-    MoveResultMethod();
-    ~MoveResultMethod();
+    void execute(const xmlrpc_c::paramList& paramList, xmlrpc_c::value* const retval);
+};
 
+class GameResultMethod : public xmlrpc_c::method {
+public:
     void execute(const xmlrpc_c::paramList& paramList, xmlrpc_c::value* const retval);
 };
