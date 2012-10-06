@@ -178,7 +178,7 @@ int main() {
     }
     if(mewant && bestoff.first == best.first &&
        __builtin_clz(best.second.first) - __builtin_clz(bestoff.second.first) <= 1) {
-      bid = (int)(bid * 0.8);
+      //bid = (int)(bid * 0.8);
       //bid = (int)(bid * 0.5);
     }
     if(opwant && opneed == 1) {
