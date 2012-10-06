@@ -143,6 +143,8 @@ int main() {
     if(offer.empty()) break;
 
     bool opwant = false;
+    int opneed = 0;
+    int opchoice = -1;
     for(int i = 0; i < 2; i++) {
       transpose();
       rot = 7 - round % 7;
@@ -152,8 +154,14 @@ int main() {
       for(int r = 0; r < 7; r++) {
         find_picks(r, 0, 0, 0);
       }
-      if(i == 0) opwant = BPICKS[round % 7] != -1;
+      if(i == 0) {
+        opwant = BPICKS[round % 7] != -1;
+        opneed = best.first;
+        opchoice = BPICKS[round % 7];
+      }
     }
+
+    bool mewant = BPICKS[round % 7] != -1;
 
     int bid = credits / best.first;
     if(!opwant) {
@@ -161,9 +169,36 @@ int main() {
     } else if(round < 3) {
       bid = 8;
     }
+    if(opwant && opneed == 1) {
+      bid = (int)(bid * 1.5);
+    }
+    
     if(bid == 0) bid = 1;
     if(BPICKS[round % 7] == -1) bid = 0;
+    if(bid > credits) bid = credits;
     cout << bid << endl;
+
+/*
+    int bid = credits / best.first;
+    if(bid == 0) bid = 1;
+    if(round < 4) {
+      bid = 8;//5 + round * 2;
+    } else if(!opwant && !mewant) {
+      //bid = 1;
+    } else if(opwant && !mewant) {
+      if(opneed == 1) bid = (int)(1.5 * bid);
+      if(opneed == 2) bid = bid;
+      if(opneed == 3) bid = (int)(0.8 * bid);
+      if(opneed > 3) bid = 1 + rand() % 3;
+    } else if(!opwant && mewant) {
+      if(best.first >= 2) {
+        bid = 1 + bid / 2 + rand() % ((bid + 1) / 2);
+      }
+    }
+    if(bid == 0) bid = 1;
+    if(bid > credits) bid = credits;
+    cout << bid << endl;
+*/
 
     int win; cin >> win;
     if(win == -1) {
@@ -173,6 +208,8 @@ int main() {
     if(win) {
       credits -= bid;
       int choice = BPICKS[round % 7];
+      if(choice == -1) choice = opchoice;
+      if(choice == -1) choice = offer[rand() % offer.size()];
       int r = ORD[choice] / 7;
       int c = ORD[choice] % 7;
       C[r][c] = 0;
