@@ -173,16 +173,16 @@ int main() {
     int bid = credits / best.first;
     if(!opwant) {
       bid = (int)(bid * 0.5);
-    } else if(round < 4) {
-      bid = 7 + rand() % 6;
+    } else if(round < 3) {
+      bid = 8;
     }
     if(mewant && bestoff.first == best.first &&
        __builtin_clz(best.second.first) - __builtin_clz(bestoff.second.first) <= 1) {
-      //bid = (int)(bid * 0.8);
+      bid = (int)(bid * 0.8);
       //bid = (int)(bid * 0.5);
     }
     if(opwant && opneed == 1) {
-      bid = min((int)(0.4 + credits * .6), (int)(bid * (1.4 + (rand() % 300) / 1000.0)));
+      bid = min((int)(0.4 + credits * .6), (int)(bid * 1.5));
       //bid = min((int)(0.2 + credits * .8), (int)(bid * 1.5));
       if(!mewant) BPICKS[round % 7] = opchoice;
     } else if(opwant && !mewant) {
