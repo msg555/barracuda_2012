@@ -1,0 +1,6 @@
+The winning submission to the Barracuda 2012 Michigan contest.  To run just do
+
+make
+./driver ./bid_bot
+
+And the game RPC server will be started on port 4776.
